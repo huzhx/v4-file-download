@@ -67,3 +67,6 @@ core/loader/
 core/www/
 .stencil/
 angular/build/
+
+# env
+environments/

@@ -3,8 +3,14 @@ import { Component } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer/ngx';
+import {
+  FileTransfer,
+  FileTransferObject,
+  FileUploadOptions
+} from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
+
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -33,14 +39,18 @@ export class AppComponent {
   }
 
   downloadFiles() {
-    const url = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-    this.fileTransferObject.download(url, this.file.externalDataDirectory + 'dummy.pdf').then(
-      entry => {
-        console.log('download complete: ' + entry.toURL());
-      },
-      error => {
-        console.log(error);
-      }
-    );
+    const url = `${environment.API_ENDPOINT}/files/pdfs`;
+    console.log(url);
+    const options: FileUploadOptions = { headers: { 'x-auth': environment.FILES_API_TOKEN } };
+    this.fileTransferObject
+      .download(url, this.file.externalDataDirectory + 'pdfs.zip', null, options)
+      .then(
+        entry => {
+          console.log('download complete: ' + entry.toURL());
+        },
+        error => {
+          console.log(error);
+        }
+      );
   }
 }

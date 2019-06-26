@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { FileTransfer } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { Zip } from '@ionic-native/zip/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -20,6 +21,7 @@ import { AppRoutingModule } from './app-routing.module';
     SplashScreen,
     File,
     FileTransfer,
+    Zip,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

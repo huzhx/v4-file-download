@@ -9,6 +9,7 @@ import {
   FileUploadOptions
 } from '@ionic-native/file-transfer/ngx';
 import { File } from '@ionic-native/file/ngx';
+import { Zip } from '@ionic-native/zip/ngx';
 
 import { environment } from '../environments/environment';
 
@@ -24,7 +25,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private fileTransfer: FileTransfer,
-    private file: File
+    private file: File,
+    private zip: Zip
   ) {
     this.initializeApp();
   }
@@ -47,6 +49,24 @@ export class AppComponent {
       .then(
         entry => {
           console.log('download complete: ' + entry.toURL());
+          // * extract the file
+          this.zip
+            .unzip(entry.toURL(), this.file.externalDataDirectory, progress =>
+              console.log(
+                'Unzipping, ' + Math.round((progress.loaded / progress.total) * 100) + '%'
+              )
+            )
+            .then(res => {
+              if (res === 0) {
+                console.log('SUCCESS');
+              }
+              if (res === -1) {
+                console.log('FAILED');
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
         },
         error => {
           console.log(error);

@@ -40,6 +40,7 @@
     "cordova-plugin-zip": "3.1.0",
     "cordova-safe": "2.0.1",
     "core-js": "^2.5.4",
+    "minizip-asm.js": "^1.0.10",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.29"

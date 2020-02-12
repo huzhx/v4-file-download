@@ -15,6 +15,7 @@ import { environment } from '../environments/environment';
 })
 export class AppComponent {
   fileTransferObject: FileTransferObject;
+  pdfsRequired: string[];
 
   constructor(
     private platform: Platform,
@@ -32,15 +33,35 @@ export class AppComponent {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
       this.fileTransferObject = this.fileTransfer.create();
-      this.downloadFiles();
+      this.pdfsRequired = ['pdfs/session1/DangersOfMissingTreatments.pdf', 'pdfs/session1/HowHealthyKidneysWork.pdf'];
+      this.checkFiles(this.pdfsRequired).then(missingFiles => {
+        if (missingFiles) {
+          this.downloadFiles(`${environment.API_ENDPOINT}/files/pdfs`, 'pdfs.zip');
+        }
+      });
     });
   }
 
-  downloadFiles() {
-    const url = `${environment.API_ENDPOINT}/files/pdfs`;
-    console.log(url);
+  checkFiles(filesRequired) {
+    const checkPromises = [];
+    for (let file of filesRequired) {
+      checkPromises.push(this.file.checkFile(this.file.externalDataDirectory, file));
+    }
+    return Promise.all(checkPromises)
+      .then(_ => {
+        console.log('files exist!');
+        return 0;
+      })
+      .catch(err => {
+        console.log('files missing!');
+        console.log(err);
+        return 1;
+      });
+  }
+
+  downloadFiles(url, fileName) {
     const options: FileUploadOptions = { headers: { 'x-auth': environment.FILES_API_TOKEN } };
-    this.fileTransferObject.download(url, this.file.externalDataDirectory + 'pdfs.zip', null, options).then(
+    this.fileTransferObject.download(url, this.file.externalDataDirectory + fileName, null, options).then(
       entry => {
         console.log('download complete: ' + entry.toURL());
         // * extract the file
@@ -53,7 +74,7 @@ export class AppComponent {
               console.log('SUCCESS');
               // * remove the zip file after unzip
               this.file
-                .removeFile(this.file.externalDataDirectory, 'pdfs.zip')
+                .removeFile(this.file.externalDataDirectory, fileName)
                 .then(_ => {
                   console.log('removed the zip file');
                 })
